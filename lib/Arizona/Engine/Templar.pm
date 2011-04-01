@@ -17,19 +17,19 @@ class Arizona::Engine::Templar {
     use Digest::MD5;
 
     # path to the template.  Currently supports only Mason, but probably won't always.
-    has template   => (isa => 'Str',          is => 'ro', required => 1);
+    has template   => (isa => 'Str',          is => 'rw');
     
     # title for HTML templates
-    has title      => (isa => 'Str',          is => 'ro', required => 0, default => '');
+    has title      => (isa => 'Str',          is => 'rw');
 
     # a hash of variables to make available to the template
-    has parameters => (isa => 'HashRef',      is => 'rw', required => 1);
+    has parameters => (isa => 'HashRef',      is => 'rw');
 
     # the Arizona::Model::User (or duck-type compatible class) that is logged in
-    has user       => (isa => 'Object',       is => 'ro', required => 1);
+    has user       => (isa => 'Object|Undef',  is => 'rw');
   
     # Dancer request object (your templates should NOT really need this, Views should be dumb).
-    has request    => (isa => 'Object|Undef',  is => 'ro', required => 0);
+    has request    => (isa => 'Object|Undef',  is => 'rw');
 
     # return the filesystem path to where the Mason components live.
     action mason_root() {

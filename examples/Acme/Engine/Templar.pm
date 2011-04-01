@@ -21,13 +21,11 @@ class Acme::Engine::Templar extends Arizona::Engine::Templar {
 
     # return the filesystem path to where the Mason cache will live
     action mason_data() {
-        warn "configuration = " . Data::Dumper::Dumper $self->configuration();
         return $self->configuration->{mason_data} or die "missing mason_data configuration";
     }
      
     # return the filesystem path where the Mason templates/components live   
     action mason_root() {
-        warn "configuration = " . Data::Dumper::Dumper $self->configuration();
         return $self->configuration->{mason_root} or die "missing mason_root configuration";
     }        
 

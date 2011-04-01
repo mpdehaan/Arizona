@@ -6,10 +6,9 @@ use MooseX::Declare;
 use strict;
 use warnings;
 use MIME::Types;
-use Try::Tiny;
 use Arizona::Err::Forbidden;
-use Arizona::Engine::ErrorCatcher;
 use Arizona::Engine::Loader;
+use Arizona::Engine::ErrorCatcher;
 
 class Arizona::Engine::Handler {
 
@@ -20,10 +19,12 @@ class Arizona::Engine::Handler {
    has verb      => (is => 'rw', isa => 'Str',    required => 1);
    has category  => (is => 'rw', isa => 'Str',    required => 1);
    has request   => (is => 'rw', isa => 'Object', required => 1);
+   has templar   => (is => 'rw', isa => 'Object', required => 1);
 
    has namespace => (is => 'rw', isa => 'Str',    lazy => 1, builder => '_make_namespace');
    has target    => (is => 'rw', isa => 'Str',    lazy => 1, builder => '_make_target');      
- 
+    
+
    action _make_namespace() {
        my $namespace = $self->namespaces()->{$self->category()};
    }
@@ -42,10 +43,11 @@ class Arizona::Engine::Handler {
    action dynamic_call() {
        $self->is_rest() if ($self->category() eq 'Rest');
        $self->setup_hook();
-       try {
+       eval {
            return $self->_make_request();
-       } catch {
-           return Arizona::Engine::ErrorCatcher->new()->handle($_, $self->is_rest());
+       } or do {
+           my $error = $@;
+           return Arizona::Engine::ErrorCatcher->new(templar => $self->templar())->handle($error, $self->is_rest());
        };
    }
 

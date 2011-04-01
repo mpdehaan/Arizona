@@ -30,7 +30,7 @@ class Arizona::Err::BaseError {
 
     # what template to use when displaying this error?  Override in subclasses.
     action template() {
-        return "/templates/errors/error.tpl"
+        return "/templates/error.tpl"
     }
 
     # what's the Title of this error?  This is used in HTML pages.

@@ -13,9 +13,6 @@ class Acme::Controller::Rest::Calculator {
  
     action API_add($authenticated_user, $input, $request) {
         # input is a hash of already decoded JSON
-        warn "*** ADDITION INPUTS: *** \n";
-        warn Data::Dumper::Dumper $input;
-        warn "body=" . $request->body() ."\n";
         my $a   = $input->{a};
         my $b   = $input->{b};
         my $sum = $a+$b;

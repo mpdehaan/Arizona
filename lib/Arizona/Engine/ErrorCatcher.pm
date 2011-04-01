@@ -16,7 +16,11 @@ class Arizona::Engine::ErrorCatcher {
   
     use Dancer qw//;
     use Arizona::Engine::Templar;
+    use Arizona::Err::BaseError;
+    use Arizona::Err::InternalError;
     use Method::Signatures::Simple name => 'action';
+
+    has templar => (is => 'rw', isa => 'Object');
 
     # Use Arizona::Err::SomeError polymorphically to optionally redirect or draw the specific
     # error template for that error.
@@ -55,16 +59,17 @@ class Arizona::Engine::ErrorCatcher {
             print STDERR $self->_gen_trace($error);
         }
         eval {
-            return Arizona::Engine::Templar->new(
+            return $self->templar()->new(
                 template    => $error->template(),
                 parameters  => { error => $error },
                 request     => undef, # not needed here
-                user        => undef, # not needed here
+                user        => undef,
                 title       => $error->caption(),
             )->render_page();
         } or do {
             # an error rendering an error shouldn't happen, except when we're developing
             # a new error page, which is now!
+            warn "error rendering page! $@\n";
             return $@;
         };
     }
@@ -87,13 +92,11 @@ class Arizona::Engine::ErrorCatcher {
         
         # mason-like errors respond to message
         if (ref($error) && $error->can('as_brief')) {
-            warn "is mason\n";
             return Arizona::Err::InternalError->new(text => $error->as_brief());
         }
 
         # error is a flat string
         unless (ref($error)) {
-            warn "is string\n";
             return Arizona::Err::InternalError->new(text => $error);
         }
 
