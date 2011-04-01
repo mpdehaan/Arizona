@@ -1,0 +1,29 @@
+# base class for WA:: Exceptions
+
+use MooseX::Declare;
+
+class WA::Err::BaseError extends WA::Model::BaseObject {
+
+    use Method::Signatures::Simple name => 'action';
+    use WA::Model::BaseObject;
+    
+    # FIXME: make sure all error traits are marked as Data in subclasses
+    data text => (isa  => 'Str');
+    data code => (isa  => 'Int', default => 500);
+
+    # does this error cause a redirect?  Return url string if yes, undef if no.
+    action redirect() {
+        return undef;
+    }
+
+    # what template to use when displaying this error?  Override in subclasses.
+    action template() {
+        return "/templates/errors/error.tpl"
+    }
+
+    # what's the Title of this error?  This is used in HTML pages.
+    action caption() {
+        return "Error";
+    }
+
+}

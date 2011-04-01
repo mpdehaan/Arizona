@@ -1,0 +1,10 @@
+# Parent class for all authentication/login errors.  Authorization (WA::Err::Forbidden) comes later and is not a subclass.
+
+use MooseX::Declare;
+
+class WA::Err::AuthError extends WA::Err::BaseError {
+
+   has code => (traits => ['Data'], isa => 'Int', is => 'rw', default => 401);
+
+}
+
