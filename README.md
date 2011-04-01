@@ -1,27 +1,24 @@
 Arizona
 =======
 
-The Arizona team likes comments, but dislikes pod. Expect to see some more user-level and generated 
-API documentation shortly, but do read the code. Arizona wishes that you understand how it works 
-(so you can become a contributor), and there's not really much to it.
+Arizona is a mini-MVC, all-AJAX-all-the-time web framework built on top of a micro-framework.
 
-Installation
-============
+The micro-framework is Perl's most-excellent Dancer, which is inspired by Ruby's Sinatra.
+Arizona also puts some abstractions around minimal use of HTML::Mason for templating.
+ 
+Arizona is designed to be 100% AJAX with pluggable controllers so you don't end 
+up with a mammoth routes file. Just add code.
 
-...
+Arizona also offers improvements to error handling, featuring polymorphic typed exceptions that can JSON-ify themselves and 
+dictate their own error codes and templates.
 
-Testing
-=======
+Don't you hate it when your web framework comes with a model you don't like?  Arizona doesn't.
 
-...
-
-Site/App Specifics
-==================
-
-...
+You can bring your own model.  Might we suggest github.com/webassign/Elevator?
 
 License
 =======
+
 Arizona is MIT licensed open source software.  See COPYING for more details.
 
 Questions/Comments?  Want to send in a patch?
