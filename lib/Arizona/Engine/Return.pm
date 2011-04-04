@@ -1,6 +1,6 @@
 # class for REST returns
 # ensures only certain information can be passed to web pages and that
-# everything is consistent.  Do not subclass.
+# everything is consistent.  Do not subclass this.
 
 use MooseX::Declare;
 
@@ -9,13 +9,17 @@ class Arizona::Engine::Return {
    use Method::Signatures::Simple name => 'action';
    use JSON::XS;
 
-   # a serialized object
+   # a serialized object or datastructure
+   # if using Elevator, $obj->to_datastruct is great
    has data     => (is => 'rw', isa  => 'HashRef');
    
-   # $obj->extended_data, where available
+   # $obj->extended_data, where available.  This is a place to store additional data
+   # about the object that might be derived and not explicitly in a database, or any other
+   # semantics you might like.  It would be best to avoid using this if you don't have a reason for it.
    has extended => (is => 'rw', isa  => 'HashRef');
    
-   # a message to use in 'flash' type view display.   Should never control behavior.
+   # a message to use in 'flash' type view display.   Should never control behavior, but could be used
+   # to send a human-readable explanation or string key.  
    has message  => (is => 'rw', isa => 'Str');
 
    # XML to use to dynamically update portions of a page (used as return of REST calls)
@@ -33,6 +37,8 @@ class Arizona::Engine::Return {
            live_update => $self->live_update()
        };
    }
+
+   # return the JSON version of this error mesage.
 
    action to_json_str() {
        return JSON::XS::encode_json($self->to_datastruct());

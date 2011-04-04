@@ -21,6 +21,16 @@ License
 
 Arizona is MIT licensed open source software.  See COPYING for more details.
 
+Documentation / Getting Started
+===============================
+
+Browse the 'examples' folder to see how an application is built with Arizona.
+
+Also see the 'docs' folder for more documentation, including setup, deployment info, and pointers
+to documentation on related libraries to read.
+
+There's also a todo about future feature plans in the 'docs' folder.
+
 Questions/Comments?  Want to send in a patch?
 =============================================
 
