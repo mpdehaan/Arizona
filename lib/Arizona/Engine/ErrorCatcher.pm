@@ -16,11 +16,10 @@ class Arizona::Engine::ErrorCatcher {
   
     use Dancer qw//;
     use Arizona::Engine::Templar;
-    use Arizona::Err::BaseError;
-    use Arizona::Err::InternalError;
     use Method::Signatures::Simple name => 'action';
 
     has templar => (is => 'rw', isa => 'Object');
+    has default_error => (is => 'rw', isa => 'Object');
 
     # Use Arizona::Err::SomeError polymorphically to optionally redirect or draw the specific
     # error template for that error.
@@ -92,16 +91,16 @@ class Arizona::Engine::ErrorCatcher {
         
         # mason-like errors respond to message
         if (ref($error) && $error->can('as_brief')) {
-            return Arizona::Err::InternalError->new(text => $error->as_brief());
+            return $self->default_error->new(text => $error->as_brief());
         }
 
         # error is a flat string
         unless (ref($error)) {
-            return Arizona::Err::InternalError->new(text => $error);
+            return $self->default_error->new(text => $error);
         }
 
         # some other object error, this will be noisy!
-        return Arizona::Err::InternalError->new(text => Data::Dumper::Dumper $error); 
+        return $self->default_error->new(text => Data::Dumper::Dumper $error); 
     }
 
 

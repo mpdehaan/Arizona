@@ -6,6 +6,7 @@ use warnings;
 use Acme::Engine::Handler;  
 use Acme::Engine::Templar;
 use Acme::Controllers;
+use Arizona::Err::InternalError;
 use Dancer;
 use MIME::Types;
 
@@ -27,12 +28,13 @@ set traces      => 1;
 # use the ":filename" variant below to force the mimetype to whatever you want.
 any ['get','post'] => '/:category/:noun/:verb' => sub {
     my $handler = Acme::Engine::Handler->new(
-        templar  => Acme::Engine::Templar->new(),
-        category => params->{category},
-        noun     => params->{noun},
-        verb     => params->{verb},
-        is_rest  => params->{category} eq 'Rest',
-        request  => request()
+        templar       => Acme::Engine::Templar->new(),
+        category      => params->{category},
+        noun          => params->{noun},
+        verb          => params->{verb},
+        is_rest       => params->{category} eq 'Rest',
+        request       => request(),
+        default_error => Arizona::Err::InternalError->new(),
     );
     my $content_type = (params->{category} eq 'Rest') ? 'text/plain' : 'text/html';
     content_type($content_type);
@@ -43,12 +45,13 @@ any ['get','post'] => '/:category/:noun/:verb' => sub {
 # the filename for things that are downloadable.
 any ['get','post'] => '/:category/:noun/:verb/:filename' => sub {
     my $handler = Acme::Engine::Handler->new(
-        templar  => Acme::Engine::Templar->new(),
-        category => params->{category},
-        noun     => params->{noun},
-        verb     => params->{verb},
-        is_rest  => params->{category} eq 'Rest',
-        request  => request()
+        templar       => Acme::Engine::Templar->new(),
+        category      => params->{category},
+        noun          => params->{noun},
+        verb          => params->{verb},
+        is_rest       => params->{category} eq 'Rest',
+        request       => request(),
+        default_error => Arizona::Err::InternalError->new(),
     );
     my @tokens = split( /\./, params->{filename} );
     if (scalar length @tokens) {

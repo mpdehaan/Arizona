@@ -20,6 +20,7 @@ class Arizona::Engine::Handler {
    has category  => (is => 'rw', isa => 'Str',    required => 1);
    has request   => (is => 'rw', isa => 'Object', required => 1);
    has templar   => (is => 'rw', isa => 'Object', required => 1);
+   has default_error => (is => 'rw', isa => 'Object', required => 1);
 
    has namespace => (is => 'rw', isa => 'Str',    lazy => 1, builder => '_make_namespace');
    has target    => (is => 'rw', isa => 'Str',    lazy => 1, builder => '_make_target');      
@@ -47,7 +48,10 @@ class Arizona::Engine::Handler {
            return $self->_make_request();
        } or do {
            my $error = $@;
-           return Arizona::Engine::ErrorCatcher->new(templar => $self->templar())->handle($error, $self->is_rest());
+           return Arizona::Engine::ErrorCatcher->new(
+               default_error => $self->default_error(),
+               templar => $self->templar())->handle($error, $self->is_rest()
+           );
        };
    }
 
