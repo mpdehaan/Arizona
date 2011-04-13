@@ -78,29 +78,19 @@ class Arizona::Engine::Loader {
          die Arizona::Err::Forbidden->new(text => "disallowed module") unless $self->module() =~ /^([A-Za-z0-9:_])+$/;
          die Arizona::Err::Forbidden->new(text => "invalid module") unless $self->module() =~ /::Controller::/;
 
-         # instantiate the controller class, to use a module it must be included in Controller::Controllers.pm
-         my $obj;
-         eval {
-             $obj = $self->module()->new();
-         } or do {
-             # either a syntax error or an invalid path, though we won't tell userland.
-             # developers check for syntax errors by doing 'perl Arizona/Controller/Foo/Bar.pm'
-             # and make sure your URLs are correct.
-             die Arizona::Err::InternalError->new(text => "cannot load requested module");
-         }; 
-
          my $result = '';
 
+         # to use a module it must be included in Controller::Controllers.pm
          # for REST calls, gather the return object's datastructures and auto-convert into JSON
-         # controller does not have to do JSON handling.
+         # controller does not have to do JSON handling itself.
          if ($self->is_rest()) {
-             $result = $obj->$method_name($self->user(), $input_data, $self->request());
+             $result = $self->module()->$method_name($self->user(), $input_data, $self->request());
              die Arizona::Err::InternalError->new(text => 'improper return') unless $result->isa('Arizona::Engine::Return');
              return $result->to_json_str();
          } 
 
          # non-REST calls are simpler, and just return strings
-         return $obj->$method_name($self->user(), scalar $self->request->params(), $self->request());
+         return $self->module()->$method_name($self->user(), scalar $self->request->params(), $self->request());
     }
 
    # used to split data out of the URL, this should really be moved into Handler?
